@@ -1,0 +1,55 @@
+
+#intro {
+	background-image: url("/static/frierenriver.jpg");
+	height: 60vh;
+  }
+/* :root {
+color-scheme: dark;
+} */
+  /* Height for devices larger than 576px */
+  /* @media (min-width: 992px) {
+	#intro {
+	  margin-top: -58.59px;
+	}
+} */
+.ant {
+	height: 100vh;
+	background-color: rgb(40, 46, 46);
+  }
+.hero {
+padding-bottom: 56.22%; /* = ( 600 / 1600 ) x 100 */
+background-repeat: repeat-y;
+/* background-image: url("/static/frierenriver.jpg"); */
+/* background-size: cover; */
+}
+.card:hover {
+	transform: scale(1.02);
+	transition: transform .2s;
+}
+/* a {
+color: #1c87c9;
+border-radius: 25px;
+}
+a:hover {
+	border-radius: 25px;
+	border: 2px solid #73AD21;	
+} */
+
+#mynavbarimg{
+	background-image: url("/static/yuruCamp.webp");
+	background-size: cover;
+	/* background-position-y: 305px; */
+    display: flex;
+    top: 0;
+	/* position: -webkit-sticky; */
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+	font-size: 1rem;
+	line-height: 2.15;
+	padding-left: .75em;
+	padding-right: .75em;
+	}
+	.card-registration .select-arrow {
+	top: 13px;
+	}

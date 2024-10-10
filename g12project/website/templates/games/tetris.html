@@ -1,0 +1,393 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Tetris</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style type="text/css">
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      canvas {
+        border: 1px solid #bbb;
+        position: absolute;
+        top: calc(5% + 50px);
+        left: calc(50% - 160px);
+      }
+
+      .head {
+        position: absolute;
+        top: 5%;
+        height: 50px;
+        left: calc(50% - 160px);
+        display: inline-flex;
+        width: 320px;
+      }
+
+      .head p {
+        margin-top: 10px;
+        font-size: 30px;
+      }
+
+      .score {
+        position: absolute;
+        top: 5%;
+        right: 0;
+        height: 50px;
+        color: #addfad;
+      }
+    </style>
+  </head>
+
+  <body style="background-color: rgb(39, 30, 30);">
+    <div class="fixed-top"> <!-- return button -->
+        <a href="/games"
+          ><button class="btn btn-outline-success">return</button></a
+        ></a
+        ></div>
+    <div class="head">
+      <p>
+        <font color="#bbb">tetris </font>
+        <font color="#dff3ff">←↑↓→</font>
+      </p>
+      <p class="score">0</p>
+    </div>
+    <canvas width="320" height="640" id="game"></canvas>
+  </body>
+
+  <script type="text/javascript">
+    // получаем доступ к холсту
+    const canvas = document.getElementById("game");
+    const context = canvas.getContext("2d");
+    // размер квадратика
+    const grid = 32;
+    // массив с последовательностями фигур, на старте — пустой
+    const tetrominoSequence = [];
+    $score = 0;
+    // с помощью двумерного массива следим за тем, что находится в каждой клетке игрового стакана
+    // размер стакана — 10 на 20, и несколько строк ещё находится за видимой областью
+    const playfield = [];
+
+    // заполняем сразу массив пустыми ячейками
+    for (let row = -2; row < 20; row++) {
+      playfield[row] = [];
+
+      for (let col = 0; col < 10; col++) {
+        playfield[row][col] = 0;
+      }
+    }
+
+    const tetrominos = {
+      I: [
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ],
+      J: [
+        [1, 0, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+      L: [
+        [0, 0, 1],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+      O: [
+        [1, 1],
+        [1, 1],
+      ],
+      S: [
+        [0, 1, 1],
+        [1, 1, 0],
+        [0, 0, 0],
+      ],
+      Z: [
+        [1, 1, 0],
+        [0, 1, 1],
+        [0, 0, 0],
+      ],
+      T: [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+    };
+
+    // цвет каждой фигуры
+    const colors = {
+      I: "#7B9E7B",
+      O: "#4A5E4A",
+      T: "#ADDFAD",
+      S: "#B7EBB7",
+      Z: "#99C499",
+      J: "#678567",
+      L: "#99C499",
+    };
+
+    // счётчик
+    let count = 0;
+    // текущая фигура в игре
+    let tetromino = getNextTetromino();
+    // следим за кадрами анимации, чтобы если что — остановить игру
+    let rAF = null;
+    // флаг конца игры, на старте — неактивный
+    let gameOver = false;
+
+    // Функция возвращает случайное число в заданном диапазоне
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Выбираем следующую фигуру, которая появится в игре
+    function generateSequence() {
+      // тут — сами фигуры
+      const sequence = ["I", "J", "L", "O", "S", "T", "Z"];
+
+      while (sequence.length) {
+        // случайным образом находим любую из них
+        const rand = getRandomInt(0, sequence.length - 1);
+        const name = sequence.splice(rand, 1)[0];
+        // помещаем выбранную фигуру в игровой массив с последовательностями
+        tetrominoSequence.push(name);
+      }
+    }
+
+    // получаем следующую фигуру
+    function getNextTetromino() {
+      // если следующей нет — генерируем
+      if (tetrominoSequence.length === 0) {
+        generateSequence();
+      }
+      // берём первую фигуру из массива
+      const name = tetrominoSequence.pop();
+      // сразу создаём матрицу, с которой мы отрисуем фигуру
+      const matrix = tetrominos[name];
+
+      // I и O стартуют с середины, остальные — чуть левее
+      const col = playfield[0].length / 2 - Math.ceil(matrix[0].length / 2);
+
+      // I начинает с 21 строки (смещение -1), а все остальные — со строки 22 (смещение -2)
+      const row = name === "I" ? -1 : -2;
+
+      // вот что возвращает функция
+      return {
+        name: name, // название фигуры (L, O, и т.д.)
+        matrix: matrix, // матрица с фигурой
+        row: row, // текущая строка (фигуры стартую за видимой областью хоста)
+        col: col, // текущий столбец
+      };
+    }
+
+    // поворачиваем матрицу на 90 градусов
+    function rotate(matrix) {
+      const N = matrix.length - 1;
+      const result = matrix.map((row, i) =>
+        row.map((val, j) => matrix[N - j][i])
+      );
+      // на входе матрица, и на выходе тоже отдаём матрицу
+      return result;
+    }
+
+    // проверяем после появления или вращения, может ли матрица (фигура) быть в этом месте стакана или она вылезет за его границы
+    function isValidMove(matrix, cellRow, cellCol) {
+      // проверяем все строки и столбцы
+      for (let row = 0; row < matrix.length; row++) {
+        for (let col = 0; col < matrix[row].length; col++) {
+          if (
+            matrix[row][col] &&
+            // если выходит за границы стакана…
+            (cellCol + col < 0 ||
+              cellCol + col >= playfield[0].length ||
+              cellRow + row >= playfield.length ||
+              // …или пересекается с другими фигурами
+              playfield[cellRow + row][cellCol + col])
+          ) {
+            // то возвращаем, что нет, так не пойдёт
+            return false;
+          }
+        }
+      }
+      // а если мы дошли до этого момента и не закончили раньше — то всё в порядке
+      return true;
+    }
+
+    // когда фигура окончательна встала на своё место
+    function placeTetromino() {
+      $score++;
+      $(".score").html($score);
+      // обрабатываем все строки и столбцы в игровом стакане
+      for (let row = 0; row < tetromino.matrix.length; row++) {
+        for (let col = 0; col < tetromino.matrix[row].length; col++) {
+          if (tetromino.matrix[row][col]) {
+            // если край фигуры после установки вылезает за границы стакана, то игра закончилась
+            if (tetromino.row + row < 0) {
+              return showGameOver();
+            }
+            // если всё в порядке, то записываем в масссив игрового стакана нашу фигуру
+            playfield[tetromino.row + row][tetromino.col + col] =
+              tetromino.name;
+          }
+        }
+      }
+
+      // проверяем, чтобы заполненные ряды очистились снизу вверх
+      for (let row = playfield.length - 1; row >= 0; ) {
+        // если ряд заполнен
+        if (playfield[row].every((cell) => !!cell)) {
+          // очищаем его и опускаем всё вниз на одну клетку
+          for (let r = row; r >= 0; r--) {
+            for (let c = 0; c < playfield[r].length; c++) {
+              playfield[r][c] = playfield[r - 1][c];
+            }
+          }
+        } else {
+          // переходим к следующему ряду
+          row--;
+        }
+      }
+      // получаем следующую фигуру
+      tetromino = getNextTetromino();
+    }
+
+    // показываем надпись Game Over
+    function showGameOver() {
+      // прекращаем всю анимацию игры
+      cancelAnimationFrame(rAF);
+      // ставим флаг окончания
+      gameOver = true;
+      // рисуем чёрный прямоугольник посередине стакана
+      context.fillStyle = "#bbb";
+      context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
+      // пишем надпись белым моноширинным шрифтом по центру
+      context.globalAlpha = 1;
+      context.fillStyle = "#dff3ff";
+      context.font = "36px monospace";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText("GAME OVER!", canvas.width / 2, canvas.height / 2);
+    }
+
+    // главный цикл игры
+    function loop() {
+      // начинаем анимацию
+      rAF = requestAnimationFrame(loop);
+      // очищаем холст
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      // рисуем игровой стакан с учётом заполненных фигур
+      for (let row = 0; row < 20; row++) {
+        for (let col = 0; col < 10; col++) {
+          if (playfield[row][col]) {
+            const name = playfield[row][col];
+            context.fillStyle = colors[name];
+
+            // рисуем всё на один пиксель меньше, чтобы получился эффект «в клетку»
+            context.fillRect(col * grid, row * grid, grid - 1, grid - 1);
+          }
+        }
+      }
+
+      // рисуем текущую фигуру
+      if (tetromino) {
+        // фигура сдвигается вниз каждые 35 кадров
+        if (++count > 35) {
+          tetromino.row++;
+          count = 0;
+
+          // если движение закончилось — рисуем фигуру в стакане и проверяем, можно ли удалить строки
+          if (!isValidMove(tetromino.matrix, tetromino.row, tetromino.col)) {
+            tetromino.row--;
+            placeTetromino();
+          }
+        }
+
+        // не забываем про цвет текущей фигуры
+        context.fillStyle = colors[tetromino.name];
+
+        // отрисовываем её
+        for (let row = 0; row < tetromino.matrix.length; row++) {
+          for (let col = 0; col < tetromino.matrix[row].length; col++) {
+            if (tetromino.matrix[row][col]) {
+              // и снова рисуем на один пиксель меньше
+              context.fillRect(
+                (tetromino.col + col) * grid,
+                (tetromino.row + row) * grid,
+                grid - 1,
+                grid - 1
+              );
+            }
+          }
+        }
+      }
+    }
+
+    // следим за нажатиями на клавиши
+    document.addEventListener("keydown", function (e) {
+      // если игра закончилась — сразу выходим
+      if (gameOver) return;
+
+      // стрелки влево и вправо
+      if (e.which === 37 || e.which === 39) {
+        const col =
+          e.which === 37
+            ? // если влево, то уменьшаем индекс в столбце, если вправо — увеличиваем
+              tetromino.col - 1
+            : tetromino.col + 1;
+
+        // если так ходить можно, то запоминаем текущеет положение
+        if (isValidMove(tetromino.matrix, tetromino.row, col)) {
+          tetromino.col = col;
+        }
+      }
+
+      // стрелка вверх — поворот
+      if (e.which === 38) {
+        // поворачиваем фигуру на 90 градусов
+        const matrix = rotate(tetromino.matrix);
+        // если так ходить можно — запоминаем
+        if (isValidMove(matrix, tetromino.row, tetromino.col)) {
+          tetromino.matrix = matrix;
+        }
+      }
+
+      // стрелка вниз — ускорить падение
+      if (e.which === 40) {
+        // смещаем фигуру на строку вниз
+        const row = tetromino.row + 1;
+        // если опускаться больше некуда — запоминаем новое положение
+        if (!isValidMove(tetromino.matrix, row, tetromino.col)) {
+          tetromino.row = row - 1;
+          // ставим на место и смотрим на заполненные ряды
+          placeTetromino();
+          return;
+        }
+        // запоминаем строку, куда стала фигура
+        tetromino.row = row;
+      }
+    });
+
+    // старт игры
+    rAF = requestAnimationFrame(loop);
+  </script>
+</html>

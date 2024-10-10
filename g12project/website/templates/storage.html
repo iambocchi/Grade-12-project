@@ -1,0 +1,78 @@
+<!-- dawewqeqw -->
+can you modify this to be refering to this? darkLight = db.Column(db.String(10),
+default = 'dark') changing the data to light function deleteNote(noteId) {
+fetch("/darkLightMode", { method: "POST", body: JSON.stringify({ noteId: noteId
+}), }).then((_res) => { window.location.href = "/"; }); } this is the views:
+@views.route('/darkLightMode', methods=['POST']) def darkLightMode(): note =
+json.loads(request.data) # this function expects a JSON from the INDEX.js file
+noteId = note['noteId'] note = Note.query.get(noteId) if note: if note.user_id
+== current_user.id: db.session.delete(note) db.session.commit() return
+jsonify({})
+<!-- OLD NAVBAR -->
+<nav
+  class="navbar navbar-expand-lg navbar-dark bg-dark"
+  style="font-family: sans-serif"
+>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbar"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbar">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" id="home" href="/">Home</a>
+      {% if user.is_authenticated %}
+      <a class="nav-item nav-link" id="notes" href="/notes">Notes</a>
+      <a class="nav-item nav-link" id="game" href="/games">Games</a>
+      <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+
+      {% else %}
+      <a class="nav-item nav-link" id="login" href="/login">Login</a>
+      <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+      {% endif %}
+      <a class="nav-item nav-link" id="rick" href="/rick">Rick</a>
+      <a class="nav-item nav-link" id="navbarr" href="/navbarr">navbarr</a>
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+  <div class="float-left">
+    <h5>
+      <span style="color: rgb(41, 226, 72)">Hello! </span
+      ><span style="color: aqua">{{ user.userName }}</span>
+    </h5>
+  </div>
+  <div class="float-left">
+    <button type="button" class="btn" onClick="darkMode({{ user.id }})">
+      <span aria-hidden="true"
+        ><img
+          class="rounded-circle"
+          src="/static/dark.jpg"
+          alt="darkmode"
+          style="height: 30px"
+        />
+      </span>
+    </button>
+    <!--  this is light-->
+    <button type="button" class="btn" onClick="lightMode({{ user.id }})">
+      <span aria-hidden="true"
+        ><img
+          class="rounded-circle"
+          src="/static/light.jpg"
+          alt="lightmode"
+          style="height: 30px"
+      /></span>
+    </button>
+  </div>
+  {% endif %}
+  <!-- <button onclick="lightDarkSwitch()" class="btn btn-secondary p-1">
+        <img
+          src="/static/reyes.png"
+          style="height: 25px"
+          alt="dark"
+          id="icon"
+        />
+      </button> -->
+</nav>

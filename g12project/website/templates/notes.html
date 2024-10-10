@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+
+<div class="container pb-5">
+  <br />
+  <h1
+    align="center"
+    style="color: aquamarine; font-family: 'Freak Turbulence BRK', sans-serif"
+  >
+    Mga Listahan ng may mga Utang
+  </h1>
+  <!-- list-group-numbered -->
+  <ul class="list-group list-group-flush" id="notes" style="opacity: 0.9">
+    {% for note in user.notes %}
+    <!-- list-group-item-info -->
+    <li class="list-group-item rounded">
+      <button
+        type="button"
+        class="btn btn-outline-danger btn-sm"
+        onClick="deleteNote({{ note.id }})"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <span class="text-muted">{{ note.date }}</span>
+      <p>{{ note.data }}</p>
+    </li>
+
+    {% endfor %}
+  </ul>
+  <form method="POST">
+    <textarea name="note" id="note" class="form-control"></textarea>
+    <br />
+    <div align="center">
+      <button type="submit" class="btn btn-primary">Add Note</button>
+    </div>
+  </form>
+</div>
+<!-- THIS IS THE SAMPLE -->
+
+{% endblock %} {% block script %}
+<script>
+  let element = document.getElementById("myImageBG");
+  // element.style.color = "red";
+  // element.style.backgroundImage = 'url("/static/frierenriver.jpg")';
+  element.style.backgroundImage = 'url("/static/bocchipixel.gif")';
+  // element.style.backgroundRepeat = "no-repeat"; // The background image will not repeat (default is repeat)
+  // element.style.backgroundPosition = "center"; // The background image will be centered
+  element.style.paddingBottom = "56.22%";
+  element.style.backgroundRepeat = "repeat-y";
+  element.style.height = "100vh";
+  element.style.backgroundSize = "cover";
+  element.style.position = "abosolute";
+  element.style.zIndex = "0";
+  // element.style.opacity = "0.1";
+</script>
+<script>
+  function deleteNote(noteId) {
+    fetch("/delete-note", {
+      method: "POST",
+      body: JSON.stringify({ noteId: noteId }),
+    }).then((_res) => {
+      window.location.href = "{{ request.url_rule }}";
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block title %}News {% endblock %} {% block content
+%}
+
+<div class="container pt-5">
+  <div
+    class="card card-header bg-dark align-items-center"
+    style="width: cover; color: white"
+  >
+    Current News in the Philippines
+  </div>
+  {% for i in data %} {% if i.title %}
+  <div class="card" style="width: cover">
+    <ul class="list-group list-group-flush">
+      <a href="{{ i.url }}"><li class="list-group-item">{{ i.title }}</li></a>
+    </ul>
+  </div>
+  {% endif %} {% endfor %} {% endblock %}
+</div>
+
+{% block script %}
+<script>
+  let element = document.getElementById("myImageBG");
+  // element.style.color = "red";
+  // element.style.backgroundImage = 'url("/static/frierenriver.jpg")';
+  element.style.backgroundImage = 'url("/static/customerservicebocchi.avif")';
+  // element.style.backgroundRepeat = "no-repeat"; // The background image will not repeat (default is repeat)
+  // element.style.backgroundPosition = "center"; // The background image will be centered
+  element.style.paddingBottom = "56.22%";
+  element.style.backgroundRepeat = "repeat-y";
+  element.style.height = "100vh";
+  element.style.backgroundSize = "cover";
+  element.style.position = "abosolute";
+  element.style.zIndex = "0";
+  // element.style.opacity = "0.1";
+</script>
+{% endblock %}

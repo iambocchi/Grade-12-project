@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>XOX</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style type="text/css">
+      .xo_head {
+        position: absolute;
+        top: 5%;
+        height: 50px;
+        left: calc(50% - 50px);
+        display: flex;
+      }
+
+      .xo_head p {
+        margin: 0;
+        padding: 0;
+        font-size: 50px;
+        text-align: center;
+      }
+
+      .blue {
+        color: #dff3ff;
+        margin: 0;
+        user-select: none;
+      }
+
+      #vs {
+        color: #bbb;
+        user-select: none;
+      }
+
+      .green {
+        color: #addfad;
+        margin: 0;
+        user-select: none;
+      }
+
+      .table {
+        position: absolute;
+        top: calc(5% + 50px);
+        left: calc(50% - 300px);
+        font-size: 150px;
+      }
+
+      .table td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 0;
+        width: 200px;
+        height: 200px;
+        margin: 0;
+        border-collapse: inherit;
+        transition-duration: 0.2s;
+      }
+
+      .table td:hover {
+        background-color: #e4e4e4;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body style="background-color: rgb(39, 30, 30)">
+    <a href="/games" class="fixed-top"
+      ><button style="outline-color: lightgreen; background-color: #0082df">
+        return
+      </button></a
+    >
+    <div class="xo_head">
+      <p class="blue">X</p>
+      <p id="vs">vs</p>
+      <p class="green">O</p>
+    </div>
+    <table class="table">
+      <tr>
+        <td id="0"></td>
+        <td id="1"></td>
+        <td id="2"></td>
+      </tr>
+      <tr>
+        <td id="3"></td>
+        <td id="4"></td>
+        <td id="5"></td>
+      </tr>
+      <tr>
+        <td id="6"></td>
+        <td id="7"></td>
+        <td id="8"></td>
+      </tr>
+    </table>
+  </body>
+  <script type="text/javascript">
+    let cells = document.querySelectorAll(".table td");
+    let combs = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    $move = 0;
+    $gameend = 0;
+
+    function isVictory(cells) {
+      for (let comb of combs) {
+        if (
+          cells[comb[0]].innerText == cells[comb[1]].innerText &&
+          cells[comb[1]].innerText == cells[comb[2]].innerText &&
+          cells[comb[0]].innerText != ""
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    $("td").click(function (e) {
+      if ($gameend == 1) {
+        $gameend = 0;
+        $move = 0;
+        for (let i = 0; i < 9; i++) {
+          $("#" + i).html("");
+        }
+      }
+      $tdid = this.id;
+      if ($("#" + $tdid).html() == "") {
+        if ($move % 2 === 0) {
+          $("#" + $tdid).html('<p class="blue">X</p>');
+        } else {
+          $("#" + $tdid).html('<p class="green">O</p>');
+        }
+        if (isVictory(cells)) {
+          if ($move % 2 === 0) {
+            for (let i = 0; i < 9; i++) {
+              $("#" + i).html('<p class="blue">X</p>');
+            }
+            $gameend = 1;
+          } else {
+            for (let i = 0; i < 9; i++) {
+              $("#" + i).html('<p class="green">O</p>');
+            }
+            $gameend = 1;
+          }
+        }
+        $move += 1;
+        if ($move == 9) {
+          $gameend = 1;
+        }
+      }
+    });
+  </script>
+</html>

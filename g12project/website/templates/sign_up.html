@@ -1,0 +1,141 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+content %}
+<br> <br> 
+<div class="container py-5 h-100 pt-5">
+<div class="row justify-content-center align-items-center h-100">
+  <div class="col-12 col-lg-9 col-xl-7">
+    <div class="card shadow-2-strong card-registration bg-dark text-white" style="border-radius: 15px;">
+      <div class="card-body p-4 p-md-5">
+        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Sign Up</h3>
+        <form method="post">
+          <div class="row">
+              <div class="form-group">
+                <input type="email"
+                id="email"
+                name="email"
+                placeholder="enter email" class="form-control form-control-lg" />
+                <label class="form-label" for="email">Email Address</label>
+              </div>  
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-4 d-flex align-items-center">
+
+              <div class="form-group">
+                <input type="text"
+                class="form-control"
+                id="userName"
+                name="userName"
+                placeholder="enter username" class="form-control form-control-lg"/>
+                <label for="userName" class="form-label">User Name</label>
+              </div>
+
+            </div>
+            <div class="col-md-6 mb-4">
+
+              <h6 class="mb-2 pb-1">Gender: </h6>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="genders" id="femaleGender"
+                  value="female" checked />
+                <label class="form-check-label" for="femaleGender">Female</label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="genders" id="maleGender"
+                  value="male" />
+                <label class="form-check-label" for="maleGender">Male</label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="genders" id="otherGender"
+                  value="other" />
+                <label class="form-check-label" for="otherGender">Other</label>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-4 pb-2">
+
+              <div class="form-group">
+                <input  type="password"
+                placeholder="enter password"
+                id="password1"
+                name="password1" class="form-control form-control-lg" />
+                <label class="form-label" for="password1">Password</label>
+              </div>
+
+            </div>
+            <div class="col-md-6 mb-4 pb-2">
+
+              <div class="form-group">
+                <input  type="password"
+                placeholder="confirm password"
+                id="password2"
+                name="password2" class="form-control form-control-lg" />
+                <label class="form-label" for="password2">Confirm Password</label>
+              </div>
+              </div>
+            </div>
+            <!-- this c -->
+            <div class="row">
+              <div class="col-md-6">
+
+                <div class="form-group">
+                  <input  type="number"
+                  placeholder="enter lrn"
+                  min="0" step="1" data-bind="value:replyNumber"
+                  id="LRN"
+                  name="LRN" class="form-control form-control-lg" />
+                  <label class="form-label" for="LRN">LRN</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="number"
+                  placeholder="must be 11 numbers"
+                  id="phoneNumber"
+                  name="phoneNumber" class="form-control form-control-lg" />
+                  <label class="form-label" for="phoneNumber">Phone Number</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="" align="center">
+            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+          </div>
+            <p class="text-center mt-3 mb-0">
+              Have already an account? <a href="/login">Login here</a>
+            </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+{% endblock %} 
+{% block script %}
+<script>
+  let element = document.getElementById("myImageBG");
+  // element.style.color = "red";
+  // element.style.backgroundImage = 'url("/static/frierenriver.jpg")';
+  element.style.backgroundImage =
+    'url("/static/bocchipixel.gif")';
+  // element.style.backgroundRepeat = "no-repeat"; // The background image will not repeat (default is repeat)
+  // element.style.backgroundPosition = "center"; // The background image will be centered
+  element.style.paddingBottom = "56.22%";
+  element.style.backgroundRepeat = "repeat-y";
+  element.style.height = "100vh";
+  element.style.backgroundSize = "cover";
+  element.style.position = "abosolute";
+  element.style.zIndex = "0";
+  // element.style.opacity = "0.1";
+</script>
+{% endblock %}

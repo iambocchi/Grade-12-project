@@ -1,0 +1,140 @@
+{% extends "base.html" %} {% block title %}Games{% endblock %} {% block content
+%}
+
+<div
+  class="container pt-4"
+  style="font-family: 'Freak Turbulence BRK', sans-serif"
+>
+  <h1
+    class="text-center mb-4"
+    style="font-family: 'PF Tempesta Five Condensed', sans-serif"
+  >
+    Game List
+  </h1>
+  <!-- Row 1 -->
+  <div class="row mb-4" id="oppai">
+    <!-- Game Card -->
+    <div class="col-md-4">
+      <a href="/pingpong">
+        <div class="card">
+          <img src="/static/pingpong.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Pingpong</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="/bolidegame">
+        <div class="card">
+          <img src="/static/bolide.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Bolide</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="/tetris">
+        <div class="card">
+          <img src="/static/tetris.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Tetris</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <!-- Add more game cards as needed -->
+  </div>
+  <!-- Row 2 -->
+  <div class="row mb-4" id="oppai">
+    <!-- Game Card -->
+    <div class="col-md-4">
+      <a href="/trigonium">
+        <div class="card">
+          <img src="/static/trigonium.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Trigonium</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <!-- Add more game cards as needed -->
+    <div class="col-md-4">
+      <a href="/checkers">
+        <div class="card">
+          <img src="/static/checkers.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Checkers</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="/puzzlemaker">
+        <div class="card">
+          <img src="/static/puzzlemaker.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Puzzle Maker</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <!-- Row 3 -->
+  <div class="row mb-4" id="oppai">
+    <div class="col-md-4">
+      <a href="/xo">
+        <div class="card">
+          <img src="/static/xox.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">X.O.X</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="/snakegame">
+        <div class="card">
+          <img src="/static/snake.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Snake</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="/breakout">
+        <div class="card">
+          <img src="/static/breakout.jpg" class="card-img-top" alt="game" />
+          <div class="card-body">
+            <h5 class="card-title">Breakout</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block styles %}
+<style>
+  #oppai {
+    text-align: center;
+  }
+</style>
+{% endblock %} {% block script %}
+<script>
+  let element = document.getElementById("myImageBG");
+  // element.style.color = "red";
+  // element.style.backgroundImage = 'url("/static/frierenriver.jpg")';
+  element.style.backgroundImage = 'url("/static/pixelartfrierenGIF.gif")';
+  // element.style.backgroundRepeat = "no-repeat"; // The background image will not repeat (default is repeat)
+  // element.style.backgroundPosition = "center"; // The background image will be centered
+  element.style.paddingBottom = "56.22%";
+  element.style.backgroundRepeat = "repeat-y";
+  element.style.height = "100vh";
+  element.style.backgroundSize = "cover";
+  element.style.position = "abosolute";
+  element.style.zIndex = "0";
+  // element.style.opacity = "0.1";
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
+%} <br />
+<br />
+<div class="container py-5 h-100">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+      <div class="card bg-dark text-white" style="border-radius: 1rem">
+        <div class="card-body p-5">
+          <div class="mb-md-5 mt-md-4">
+            <form method="post">
+              <h3>Login</h3>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Enter email"
+                />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Enter password"
+                />
+              </div>
+              <br />
+              <div class="mb-3 text-center">
+                <button type="submit" class="btn btn-primary">Login</button>
+              </div>
+              <p class="text-center">
+                Don't have an Account? <a href="/sign-up">Create Account</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  let element = document.getElementById("myImageBG");
+  // element.style.color = "red";
+  // element.style.backgroundImage = 'url("/static/frierenriver.jpg")';
+  element.style.backgroundImage = 'url("/static/frierenStanding.gif")';
+  // element.style.backgroundRepeat = "no-repeat"; // The background image will not repeat (default is repeat)
+  // element.style.backgroundPosition = "center"; // The background image will be centered
+  element.style.paddingBottom = "56.22%";
+  element.style.backgroundRepeat = "repeat-y";
+  element.style.height = "100vh";
+  element.style.backgroundSize = "cover";
+  element.style.position = "abosolute";
+  element.style.zIndex = "0";
+  // element.style.opacity = "0.1";
+</script>
+{% endblock %}

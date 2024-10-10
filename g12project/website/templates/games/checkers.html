@@ -1,0 +1,892 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Checkers</title>
+    <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style type="text/css">
+      .blue {
+        position: absolute;
+        color: #dff3ff;
+        margin: 0;
+        user-select: none;
+        font-size: 30px;
+        left: calc(50% - 320px - 50px);
+        top: calc(5% + 120px + 320px + 80px);
+      }
+
+      .checkers {
+        position: absolute;
+        color: #bbb;
+        user-select: none;
+        top: 5%;
+        left: calc(50% - 320px);
+        font-size: 30px;
+        height: 30px;
+      }
+
+      .checkers p {
+        margin: 0;
+      }
+
+      .green {
+        top: calc(5% + 120px);
+        left: calc(50% - 320px - 50px);
+        position: absolute;
+        color: #addfad;
+        margin: 0;
+        user-select: none;
+        font-size: 30px;
+      }
+
+      body {
+        font-family: Palatino Linotype;
+        margin: auto;
+        max-width: 70%;
+      }
+
+      table.board {
+        position: absolute;
+        top: calc(5% + 50px);
+        left: calc(50% - 320px);
+        border-collapse: collapse;
+      }
+
+      table.board td {
+        border: 0px solid #fff;
+        position: relative;
+        height: 80px;
+        width: 80px;
+        padding: 0;
+        transition-duration: 0.2s;
+      }
+
+      td.td1 {
+        background: #ffffff;
+      }
+
+      td.td2 {
+        background: #bbb;
+      }
+
+      .pawn1 {
+        background: #dff3ff;
+        border-radius: 100px;
+        height: 60px;
+        width: 60px;
+        position: relative;
+      }
+
+      .pawn1:before {
+        border: 2px solid #addfad;
+        border-radius: 100px;
+        content: "";
+        height: 50px;
+        width: 50px;
+        position: absolute;
+        left: 3px;
+        top: 3px;
+      }
+
+      .queen1:after {
+        background: #addfad;
+        border-radius: 100px;
+        content: "";
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        left: 20px;
+        top: 20px;
+      }
+
+      .pawn2 {
+        background: #addfad;
+        border-radius: 100px;
+        height: 60px;
+        width: 60px;
+        position: relative;
+      }
+
+      .pawn2:before {
+        border: 2px solid #dff3ff;
+        border-radius: 100px;
+        content: "";
+        height: 50px;
+        width: 50px;
+        position: absolute;
+        left: 3px;
+        top: 3px;
+      }
+
+      .queen2:after {
+        background: #dff3ff;
+        border-radius: 100px;
+        content: "";
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        left: 20px;
+        top: 20px;
+      }
+
+      td.hover {
+        background: #85ab85;
+      }
+
+      td.checked {
+        background: #c6e3c6;
+      }
+
+      td.possible {
+        background: #8ba3b3;
+      }
+
+      td.possible:hover {
+        background: #9fbbcc;
+      }
+
+      .shadow {
+        position: absolute;
+        left: calc(50% - 320px);
+        top: calc(5% + 50px);
+        height: 640px;
+        width: 640px;
+      }
+
+      input.start {
+        background: #dff3ff;
+        border: 2px solid #addfad;
+        border-radius: 50%;
+        color: #addfad;
+        cursor: pointer;
+        width: 160px;
+        height: 160px;
+        display: inline-block;
+        font-family: Palatino Linotype;
+        font-size: 50px;
+        position: absolute;
+        top: calc(50% - 80px);
+        left: calc(50% - 80px);
+        transition-duration: 0.2s;
+      }
+
+      input.start:hover {
+        background: #addfad;
+        color: #dff3ff;
+        border: 2px solid #dff3ff;
+      }
+
+      .win {
+        background: rgba(255, 255, 255, 0.8);
+        height: 640px;
+        width: 640px;
+        position: fixed;
+        top: calc(5% + 50px);
+        left: calc(50% - 320px);
+      }
+
+      .win div {
+        background: #bbb;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 37px;
+        height: 160px;
+        width: 160px;
+        text-align: center;
+        position: absolute;
+        top: calc(50% - 80px);
+        left: calc(50% - 80px);
+        cursor: pointer;
+      }
+
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body style="background-color: rgb(39, 30, 30);">
+    <div class="fixed-top"> <!-- return button -->
+      <a href="/games"
+        ><button class="btn btn-outline-success">return</button></a
+      ></a
+      ></div>
+    <div class="blue" style="display: none">
+      <p>B</p>
+    </div>
+    <div class="green" style="display: none">
+      <p>G</p>
+    </div>
+    <div class="checkers">
+      <p>checkers</p>
+    </div>
+    <table class="board">
+      <tr p="1">
+        <td class="td1" p="1"></td>
+        <td class="td2" align="center" p="2">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="3"></td>
+        <td class="td2" align="center" p="4">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="5"></td>
+        <td class="td2" align="center" p="6">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="7"></td>
+        <td class="td2" align="center" p="8">
+          <div class="pawn2"></div>
+        </td>
+      </tr>
+
+      <tr p="2">
+        <td class="td2" align="center" p="1">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="2"></td>
+        <td class="td2" align="center" p="3">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="4"></td>
+        <td class="td2" align="center" p="5">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="6"></td>
+        <td class="td2" align="center" p="7">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="8"></td>
+      </tr>
+
+      <tr p="3">
+        <td class="td1" p="1"></td>
+        <td class="td2" align="center" p="2">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="3"></td>
+        <td class="td2" align="center" p="4">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="5"></td>
+        <td class="td2" align="center" p="6">
+          <div class="pawn2"></div>
+        </td>
+        <td class="td1" p="7"></td>
+        <td class="td2" align="center" p="8">
+          <div class="pawn2"></div>
+        </td>
+      </tr>
+
+      <tr p="4">
+        <td class="td2" align="center" p="1"></td>
+        <td class="td1" p="2"></td>
+        <td class="td2" align="center" p="3"></td>
+        <td class="td1" p="4"></td>
+        <td class="td2" align="center" p="5"></td>
+        <td class="td1" p="6"></td>
+        <td class="td2" align="center" p="7"></td>
+        <td class="td1" p="8"></td>
+      </tr>
+
+      <tr p="5">
+        <td class="td1" p="1"></td>
+        <td class="td2" align="center" p="2"></td>
+        <td class="td1" p="3"></td>
+        <td class="td2" align="center" p="4"></td>
+        <td class="td1" p="5"></td>
+        <td class="td2" align="center" p="6"></td>
+        <td class="td1" p="7"></td>
+        <td class="td2" align="center" p="8"></td>
+      </tr>
+
+      <tr p="6">
+        <td class="td2" align="center" p="1">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="2"></td>
+        <td class="td2" align="center" p="3">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="4"></td>
+        <td class="td2" align="center" p="5">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="6"></td>
+        <td class="td2" align="center" p="7">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="8"></td>
+      </tr>
+
+      <tr p="7">
+        <td class="td1" p="1"></td>
+        <td class="td2" align="center" p="2">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="3"></td>
+        <td class="td2" align="center" p="4">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="5"></td>
+        <td class="td2" align="center" p="6">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="7"></td>
+        <td class="td2" align="center" p="8">
+          <div class="pawn1"></div>
+        </td>
+      </tr>
+
+      <tr p="8">
+        <td class="td2" align="center" p="1">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="2"></td>
+        <td class="td2" align="center" p="3">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="4"></td>
+        <td class="td2" align="center" p="5">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="6"></td>
+        <td class="td2" align="center" p="7">
+          <div class="pawn1"></div>
+        </td>
+        <td class="td1" p="8"></td>
+      </tr>
+    </table>
+
+    <div class="shadow">
+      <input type="button" class="start" value="start" />
+    </div>
+
+    <div class="win hide">
+      <div></div>
+    </div>
+
+    <script type="text/javascript">
+      var d = $(document);
+      $(function () {
+        d.data("p1", "12");
+        d.data("p2", "12");
+      });
+
+      // Узнаем чей ход
+      function player() {
+        return d.data("player");
+      }
+
+      // Изменяем счет
+      function mPawn() {
+        if (player() == 1) d.data("p2", d.data("p2") * 1 - 1);
+        else if (player() == 2) d.data("p1", d.data("p1") * 1 - 1);
+      }
+
+      // Получаем массив клеток с возможными ходами
+      function arrOfPossible(r, c, k) {
+        r = r * 1;
+        c = c * 1;
+
+        var result = new Array();
+
+        var pawn = "pawn";
+        if (player() == 1) pawn += "2";
+        else if (player() == 2) pawn += "1";
+
+        var myPawn = "pawn" + player();
+
+        var ei, s, e;
+
+        e = $("tr[p=" + r + "] td[p=" + c + "] div");
+        if (e.hasClass("queen" + player())) return arrOfPossibleQueen(r, c, k);
+
+        e = $("tr[p=" + (r - 1) + "]").children("td[p=" + (c - 1) + "]");
+        if (e.children("div").hasClass(pawn)) {
+          if (r - 2 > 0 && c - 2 > 0) {
+            ei = $("tr[p=" + (r - 2) + "] > td[p=" + (c - 2) + "] > div");
+            if (!ei.hasClass(pawn) && !ei.hasClass(myPawn)) {
+              s = r - 2 + ";" + (c - 2);
+              result.push(s);
+            }
+          }
+        }
+
+        e = $("tr[p=" + (r - 1) + "]").children("td[p=" + (c + 1) + "]");
+        if (e.children("div").hasClass(pawn)) {
+          if (r - 2 > 0 && c + 2 <= 8) {
+            ei = $("tr[p=" + (r - 2) + "] > td[p=" + (c + 2) + "] > div");
+            if (!ei.hasClass(pawn) && !ei.hasClass(myPawn)) {
+              s = r - 2 + ";" + (c + 2);
+              result.push(s);
+            }
+          }
+        }
+
+        e = $("tr[p=" + (r + 1) + "]").children("td[p=" + (c - 1) + "]");
+        if (e.children("div").hasClass(pawn)) {
+          if (r + 2 <= 8 && c - 2 > 0) {
+            ei = $("tr[p=" + (r + 2) + "] > td[p=" + (c - 2) + "] > div");
+            if (!ei.hasClass(pawn) && !ei.hasClass(myPawn)) {
+              s = r + 2 + ";" + (c - 2);
+              result.push(s);
+            }
+          }
+        }
+
+        e = $("tr[p=" + (r + 1) + "]").children("td[p=" + (c + 1) + "]");
+        if (e.children("div").hasClass(pawn)) {
+          if (r + 2 <= 8 && c + 2 <= 8) {
+            ei = $("tr[p=" + (r + 2) + "] > td[p=" + (c + 2) + "] > div");
+            if (!ei.hasClass(pawn) && !ei.hasClass(myPawn)) {
+              s = r + 2 + ";" + (c + 2);
+              result.push(s);
+            }
+          }
+        }
+
+        if (!k) {
+          if (c > 1 && r > 1) {
+            e = $("tr[p=" + (r - 1) + "]").children("td[p=" + (c - 1) + "]");
+            if (!e.children("div").hasClass(myPawn)) {
+              if (!e.children("div").length) {
+                if (
+                  player() == 1 ||
+                  $("tr[p=" + r + "] td[p=" + c + "] div").hasClass(
+                    "queen" + player()
+                  )
+                ) {
+                  s = r - 1 + ";" + (c - 1);
+                  result.push(s);
+                }
+              }
+            }
+          }
+
+          if (c <= 8 && r > 1) {
+            e = $("tr[p=" + (r - 1) + "]").children("td[p=" + (c + 1) + "]");
+            if (!e.children("div").hasClass(myPawn)) {
+              if (!e.children("div").length) {
+                if (
+                  player() == 1 ||
+                  $("tr[p=" + r + "] td[p=" + c + "] div").hasClass(
+                    "queen" + player()
+                  )
+                ) {
+                  s = r - 1 + ";" + (c + 1);
+                  result.push(s);
+                }
+              }
+            }
+          }
+
+          if (c > 1 && r < 8) {
+            e = $("tr[p=" + (r + 1) + "]").children("td[p=" + (c - 1) + "]");
+            if (!e.children("div").hasClass(myPawn)) {
+              if (!e.children("div").length) {
+                if (
+                  player() == 2 ||
+                  $("tr[p=" + r + "] td[p=" + c + "] div").hasClass(
+                    "queen" + player()
+                  )
+                ) {
+                  s = r + 1 + ";" + (c - 1);
+                  result.push(s);
+                }
+              }
+            }
+          }
+
+          if (c < 8 && r < 8) {
+            e = $("tr[p=" + (r + 1) + "]").children("td[p=" + (c + 1) + "]");
+            if (!e.children("div").hasClass(myPawn)) {
+              if (!e.children("div").length) {
+                if (
+                  player() == 2 ||
+                  $("tr[p=" + r + "] td[p=" + c + "] div").hasClass(
+                    "queen" + player()
+                  )
+                ) {
+                  s = r + 1 + ";" + (c + 1);
+                  result.push(s);
+                }
+              }
+            }
+          }
+        }
+        return result;
+      }
+
+      function arrOfPossibleQueen(r, c, k) {
+        r = r * 1;
+        c = c * 1;
+        var result = new Array();
+
+        var pawn = "pawn";
+        if (player() == 1) pawn += "2";
+        else if (player() == 2) pawn += "1";
+
+        var myPawn = "pawn" + player();
+
+        var r2, c2, e, s;
+
+        var b = true;
+        r2 = r;
+        c2 = c;
+        while (b) {
+          r2 = r2 - 1;
+          c2 = c2 - 1;
+          if (r2 < 2 || c2 < 2) {
+            b = false;
+            break;
+          }
+
+          e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+          if (e.children("div").hasClass(pawn)) {
+            if (
+              !$("tr[p=" + (r2 - 1) + "] td[p=" + (c2 - 1) + "]").children(
+                "div"
+              ).length
+            ) {
+              s = r2 - 1 + ";" + (c2 - 1);
+              result.push(s);
+            }
+            break;
+          }
+          if (e.children("div").hasClass(myPawn)) break;
+        }
+
+        b = true;
+        r2 = r;
+        c2 = c;
+        while (b) {
+          r2 = r2 - 1;
+          c2 = c2 + 1;
+          if (r2 < 2 || c2 > 7) {
+            b = false;
+            break;
+          }
+
+          e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+          if (e.children("div").hasClass(pawn)) {
+            if (
+              !$("tr[p=" + (r2 - 1) + "] td[p=" + (c2 + 1) + "]").children(
+                "div"
+              ).length
+            ) {
+              s = r2 - 1 + ";" + (c2 + 1);
+              result.push(s);
+            }
+            break;
+          }
+          if (e.children("div").hasClass(myPawn)) break;
+        }
+
+        b = true;
+        r2 = r;
+        c2 = c;
+        while (b) {
+          r2 = r2 + 1;
+          c2 = c2 - 1;
+          if (r2 > 7 || c2 < 2) {
+            b = false;
+            break;
+          }
+
+          e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+          if (e.children("div").hasClass(pawn)) {
+            if (
+              !$("tr[p=" + (r2 + 1) + "] td[p=" + (c2 - 1) + "]").children(
+                "div"
+              ).length
+            ) {
+              s = r2 + 1 + ";" + (c2 - 1);
+              result.push(s);
+            }
+            break;
+          }
+          if (e.children("div").hasClass(myPawn)) break;
+        }
+
+        b = true;
+        r2 = r;
+        c2 = c;
+        while (b) {
+          r2 = r2 + 1;
+          c2 = c2 + 1;
+          if (r2 > 7 || c2 > 7) {
+            b = false;
+            break;
+          }
+
+          e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+          if (e.children("div").hasClass(pawn)) {
+            if (
+              !$("tr[p=" + (r2 + 1) + "] td[p=" + (c2 + 1) + "]").children(
+                "div"
+              ).length
+            ) {
+              s = r2 + 1 + ";" + (c2 + 1);
+              result.push(s);
+            }
+            break;
+          }
+          if (e.children("div").hasClass(myPawn)) break;
+        }
+
+        if (!k) {
+          b = true;
+          r2 = r - 1;
+          c2 = c - 1;
+          while (b) {
+            e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+            if (
+              e.children("div").hasClass(pawn) ||
+              e.children("div").hasClass(myPawn)
+            )
+              break;
+
+            s = r2 + ";" + c2;
+            result.push(s);
+
+            r2 = r2 - 1;
+            c2 = c2 - 1;
+            if (r2 < 1 || c2 < 1) b = false;
+          }
+
+          b = true;
+          r2 = r - 1;
+          c2 = c + 1;
+          while (b) {
+            e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+            if (
+              e.children("div").hasClass(pawn) ||
+              e.children("div").hasClass(myPawn)
+            )
+              break;
+
+            s = r2 + ";" + c2;
+            result.push(s);
+
+            r2 = r2 - 1;
+            c2 = c2 + 1;
+            if (r2 < 1 || c2 > 8) b = false;
+          }
+
+          b = true;
+          r2 = r + 1;
+          c2 = c - 1;
+          while (b) {
+            e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+            if (
+              e.children("div").hasClass(pawn) ||
+              e.children("div").hasClass(myPawn)
+            )
+              break;
+
+            s = r2 + ";" + c2;
+            result.push(s);
+
+            r2 = r2 + 1;
+            c2 = c2 - 1;
+            if (r2 > 8 || c2 < 1) b = false;
+          }
+
+          b = true;
+          r2 = r + 1;
+          c2 = c + 1;
+          while (b) {
+            e = $("tr[p=" + r2 + "] td[p=" + c2 + "]");
+            if (
+              e.children("div").hasClass(pawn) ||
+              e.children("div").hasClass(myPawn)
+            )
+              break;
+
+            s = r2 + ";" + c2;
+            result.push(s);
+
+            r2 = r2 + 1;
+            c2 = c2 + 1;
+            if (r2 > 8 || c2 > 8) b = false;
+          }
+        }
+
+        return result;
+      }
+
+      function checkOnKick() {
+        var result = new Array();
+        var r, c;
+
+        $("div.pawn" + player())
+          .parent()
+          .each(function () {
+            c = $(this).attr("p");
+            r = $(this).parent().attr("p");
+            p = arrOfPossible(r, c, true);
+            if (p.length) result.push(r + ";" + c);
+          });
+
+        return result;
+      }
+
+      // Отмечаем возможные ходы
+      function getPossible(r, c, k) {
+        var p = arrOfPossible(r, c, k);
+
+        var arr;
+
+        for (var i = 0; i < p.length; i++) {
+          arr = p[i].split(";");
+          $("tr[p=" + arr[0] + "]")
+            .children("td[p=" + arr[1] + "]")
+            .toggleClass("possible")
+            .toggleClass("p2");
+        }
+      }
+
+      // Смена игрока
+      function changePlayer() {
+        if (player() == 2) {
+          d.data("player", "1");
+          $(".blue").fadeIn();
+          $(".green").fadeOut();
+        } else if (player() == 1) {
+          d.data("player", "2");
+          $(".green").fadeIn();
+          $(".blue").fadeOut();
+        }
+      }
+
+      // Старт игры
+      function start() {
+        d.data("player", "1");
+        $(".blue").fadeIn();
+        $(".green").fadeOut();
+      }
+
+      // Конец игры
+      function end() {
+        var r;
+        r = "end<br/>";
+        if (d.data("p1") == 0) r += '<font color="#addfad">green</font><br/>';
+        else if (d.data("p2") == 0)
+          r += '<font color="#dff3ff">blue</font><br/>';
+        r += "win";
+        $(".green").fadeOut();
+        $(".blue").fadeOut();
+        $("div.win > div").html(r).parent().fadeIn(500);
+      }
+
+      // Стартуем игру при нажатии кнопки "Начать"
+      $("input.start").click(function () {
+        start();
+        $(this).parent().fadeOut(500);
+      });
+
+      // Подсвечиваем клетки при наведении
+      $("td > div.pawn1").live("hover", function () {
+        if (player() == 1) $(this).parent().toggleClass("hover");
+      });
+      $("td > div.pawn2").live("hover", function () {
+        if (player() == 2) $(this).parent().toggleClass("hover");
+      });
+
+      // При нажатии на поле без шашки, убираем все подсветки
+      $("td").click(function () {
+        if ($(this).hasClass("possible")) return true;
+        $("td")
+          .removeClass("checked")
+          .removeClass("possible")
+          .removeClass("p2");
+      });
+
+      // Отмечаем шашку и показываем возможные ходы при нажатии на неё
+      $("div.pawn1").live("click", function () {
+        if (player() == 2) return true;
+
+        $(this).parent().toggleClass("checked");
+
+        var r = $(this).parent().parent().attr("p");
+        var c = $(this).parent().attr("p");
+        var k = checkOnKick();
+        var ch = r + ";" + c;
+        if (k.length) getPossible(r, c, true);
+        else getPossible(r, c, false);
+      });
+      $("div.pawn2").live("click", function () {
+        if (player() == 1) return true;
+
+        $(this).parent().toggleClass("checked");
+
+        var r = $(this).parent().parent().attr("p");
+        var c = $(this).parent().attr("p");
+        var k = checkOnKick();
+        var ch = r + ";" + c;
+        if (k.length) getPossible(r, c, true);
+        else getPossible(r, c, false);
+      });
+
+      // Делаем ход
+      $("td.possible").live("click", function () {
+        var e = $("td.checked");
+
+        var re = e.parent().attr("p") * 1;
+        var ce = e.attr("p") * 1;
+        var r = $(this).parent().attr("p") * 1;
+        var c = $(this).attr("p") * 1;
+        var kick = false;
+        var ei, rn, cn;
+
+        if (Math.abs(r - re) > 1 && Math.abs(c - ce) > 1) {
+          rn = r + (re - r) / Math.abs(re - r);
+          cn = c + (ce - c) / Math.abs(ce - c);
+          ei = $("tr[p=" + rn + "] > td[p=" + cn + "]");
+          if (ei.children("div").length) {
+            ei.html("");
+            mPawn();
+            kick = true;
+          }
+        }
+
+        if (kick) {
+          var p1 = d.data("p1");
+          var p2 = d.data("p2");
+          if (p1 * p2 == 0) end();
+        }
+
+        $(this).html(e.html());
+        e.html("");
+
+        if (player() == 1) {
+          if (r == 1) $(this).children("div.pawn1").addClass("queen1");
+        } else if (player() == 2) {
+          if (r == 8) $(this).children("div.pawn2").addClass("queen2");
+        }
+
+        $("td")
+          .removeClass("checked")
+          .removeClass("possible")
+          .removeClass("p2");
+
+        var p = arrOfPossible(r, c, true);
+        if (p.length && kick) {
+          $(this).toggleClass("checked");
+          getPossible(r, c, true);
+        } else changePlayer();
+      });
+
+      $(".win").click(function () {
+        location.reload();
+      });
+    </script>
+  </body>
+</html>
